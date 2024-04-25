@@ -27,6 +27,10 @@ export default function Home() {
     //     fetchData();
     // }, []);
 
+    if (!data) {
+        return <div>...Loading</div>;
+    }
+
     return (
         <main>
             <ul>
@@ -42,7 +46,7 @@ export default function Home() {
                     <Link href={'/Tiktok'}>Tiktok</Link>
                 </li>
             </ul>
-            <AppTable />
+            <AppTable blogs={data} />
         </main>
     );
 }

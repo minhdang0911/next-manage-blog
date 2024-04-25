@@ -27,7 +27,8 @@ function AppTable() {
                 </tr>
                 <tr>
                     <td>3</td>
-                    <td colSpan={2}>Larry the Bird</td>
+                    <td>Larry the Bird</td>
+                    <td>test</td>
                     <td>@twitter</td>
                 </tr>
             </tbody>

@@ -3,6 +3,8 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import { toast } from 'react-toastify';
+import { mutate } from 'swr';
 
 interface IProp {
     showModalCreate: boolean;
@@ -16,7 +18,38 @@ function CreateModal(props: IProp) {
     const [content, setContent] = useState<string>('');
 
     const handleSubmitForm = () => {
-        console.log('check data', title, author, content);
+        if (!title) {
+            toast.error('Vui lòng nhập tiêu đề');
+            return;
+        }
+
+        if (!author) {
+            toast.error('Vui lòng nhập tác giả');
+            return;
+        }
+
+        if (!content) {
+            toast.error('Vui lòng nhập nội dung');
+            return;
+        }
+        fetch('http://localhost:8000/blogs', {
+            method: 'POST',
+            headers: {
+                Accept: 'Application/json text/plain',
+                'Content-Type': 'application/json', // Sửa 'Content Type' thành 'Content-Type'
+            },
+            body: JSON.stringify({ title, author, content }),
+        })
+            .then((res) => res.json())
+            .then((res) => {
+                if (res) {
+                    toast.success('Thêm Blog thành công');
+                    handleCloseModal();
+                    mutate('http://localhost:8000/blogs');
+                } else {
+                    toast.error('Thêm thất bại');
+                }
+            });
     };
 
     const handleCloseModal = () => {

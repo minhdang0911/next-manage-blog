@@ -8,24 +8,58 @@ import UpdateModal from './update.modal';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
 import { mutate } from 'swr';
+import Modal from 'react-bootstrap/Modal';
+import './app.table.css';
 
 interface Iprops {
     blogs: IBLOG[];
 }
+
+interface IDeleteModalProps {
+    show: boolean;
+    onHide: () => void;
+    onDelete: () => void;
+}
+
+const DeleteModal: React.FC<IDeleteModalProps> = ({ show, onHide, onDelete }) => {
+    return (
+        <Modal show={show} onHide={onHide} backdrop="static">
+            <Modal.Header closeButton>
+                <Modal.Title>Xác nhận xóa</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Bạn có chắc chắn muốn xóa bài viết này?</Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={onHide}>
+                    Hủy
+                </Button>
+                <Button variant="danger" onClick={onDelete}>
+                    Xóa
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    );
+};
 
 function AppTable(props: Iprops) {
     const { blogs } = props;
     const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
     const [showModalUpdate, setShowModalUpdate] = useState<boolean>(false);
     const [blog, setBlog] = useState<IBLOG | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+    const [deleteId, setDeleteId] = useState<number | null>(null);
 
     const handleDeleteBlog = (id: number) => {
-        if (confirm(`Bạn có muốn xóa Blogs có id=${id}`)) {
-            fetch(`http://localhost:8000/blogs/${id}`, {
+        setDeleteId(id);
+        setShowDeleteModal(true);
+    };
+
+    const confirmDelete = () => {
+        if (deleteId) {
+            fetch(`http://localhost:8000/blogs/${deleteId}`, {
                 method: 'DELETE',
                 headers: {
-                    Accept: 'Application/json text/plain',
-                    'Content-Type': 'application/json', // Sửa 'Content Type' thành 'Content-Type'
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
                 },
             })
                 .then((res) => res.json())
@@ -37,6 +71,7 @@ function AppTable(props: Iprops) {
                         toast.error('Xóa thất bại');
                     }
                 });
+            setShowDeleteModal(false);
         }
     };
 
@@ -85,6 +120,12 @@ function AppTable(props: Iprops) {
                                         Xóa
                                     </Button>
                                 </td>
+
+                                <DeleteModal
+                                    show={showDeleteModal}
+                                    onHide={() => setShowDeleteModal(false)}
+                                    onDelete={confirmDelete}
+                                />
                             </tr>
                         );
                     })}

@@ -1,0 +1,7 @@
+.modal-backdrop {
+    display: none !important;
+}
+
+.modal-backdrop.show {
+    opacity: 0 !important;
+}

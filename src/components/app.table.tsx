@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import CreateModal from './create.modal';
 import { useState } from 'react';
 import UpdateModal from './update.modal';
+import Link from 'next/link';
 
 interface Iprops {
     blogs: IBLOG[];
@@ -42,7 +43,11 @@ function AppTable(props: Iprops) {
                                 <td>{item.author}</td>
                                 <td>
                                     {' '}
-                                    <Button variant="outline-primary">Xem</Button>
+                                    <Button variant="outline-primary">
+                                        <Link style={{ textDecoration: 'none' }} href={`/blogs/${item.id}`}>
+                                            Xem
+                                        </Link>
+                                    </Button>
                                     <Button
                                         variant="outline-warning"
                                         className="mx-3"

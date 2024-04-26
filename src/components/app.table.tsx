@@ -4,6 +4,7 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import CreateModal from './create.modal';
 import { useState } from 'react';
+import UpdateModal from './update.modal';
 
 interface Iprops {
     blogs: IBLOG[];
@@ -12,7 +13,8 @@ interface Iprops {
 function AppTable(props: Iprops) {
     const { blogs } = props;
     const [showModalCreate, setShowModalCreate] = useState<boolean>(false);
-    console.log('props', blogs);
+    const [showModalUpdate, setShowModalUpdate] = useState<boolean>(false);
+    const [blog, setBlog] = useState<IBLOG | null>(null);
 
     return (
         <>
@@ -32,16 +34,23 @@ function AppTable(props: Iprops) {
                     </tr>
                 </thead>
                 <tbody>
-                    {blogs?.map((blog) => {
+                    {blogs?.map((item) => {
                         return (
-                            <tr key={blog.id}>
-                                <td>{blog.id}</td>
-                                <td>{blog.title}</td>
-                                <td>{blog.author}</td>
+                            <tr key={item.id}>
+                                <td>{item.id}</td>
+                                <td>{item.title}</td>
+                                <td>{item.author}</td>
                                 <td>
                                     {' '}
                                     <Button variant="outline-primary">Xem</Button>
-                                    <Button variant="outline-warning" className="mx-3">
+                                    <Button
+                                        variant="outline-warning"
+                                        className="mx-3"
+                                        onClick={() => {
+                                            setBlog(item);
+                                            setShowModalUpdate(true);
+                                        }}
+                                    >
                                         Sửa
                                     </Button>
                                     <Button variant="outline-danger">Xóa</Button>
@@ -52,6 +61,12 @@ function AppTable(props: Iprops) {
                 </tbody>
             </Table>
             <CreateModal showModalCreate={showModalCreate} setShowModalCreate={setShowModalCreate} />
+            <UpdateModal
+                showModalUpdate={showModalUpdate}
+                setShowModalUpdate={setShowModalUpdate}
+                blog={blog}
+                setBlog={setBlog}
+            />
         </>
     );
 }
